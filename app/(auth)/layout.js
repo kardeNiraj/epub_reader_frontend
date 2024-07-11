@@ -2,7 +2,6 @@
 
 import apiClient from "@/Services/apiClient"
 import localStore from "@/utils/cookie"
-import useToast from "@/utils/toaster/useToast"
 import { useRouter } from "next/navigation"
 
 export default function AuthLayout({ children }) {
@@ -10,7 +9,6 @@ export default function AuthLayout({ children }) {
 
 	// check if a user is present in the localStorage of browser... i.e if a user is loggedIn
 	const token = localStore.getItem("userToken")
-	const { showToast } = useToast()
 
 	if (token) {
 		try {
@@ -21,16 +19,9 @@ export default function AuthLayout({ children }) {
 				},
 			})
 
-			// if session is not active then redirect to login page.
-			if (!response?.data?.data?.isSessionActive) {
-				showToast(
-					"error",
-					"Error",
-					error?.message ||
-						error?.response?.data?.message ||
-						"Please login to continue!"
-				)
-				router.push("/login")
+			// if session is active then redirect to home page.
+			if (response?.data?.data?.isSessionActive) {
+				router.push("/home")
 			}
 		} catch (error) {
 			showToast(
@@ -42,5 +33,6 @@ export default function AuthLayout({ children }) {
 			)
 		}
 	}
-	return <div>{children}</div>
+
+	return <>{children}</>
 }
