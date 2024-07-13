@@ -1,17 +1,17 @@
 "use client"
 
-// import { useToast } from "@/utils/toaster/useToast"
+import useToast from "@/utils/toaster/useToast"
 import { Button, Spinner } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
 import { Suspense } from "react"
-import { createNewUser } from "../Hooks"
+import { useSignup } from "../Hooks"
 
 const SignupPage = () => {
 	const router = useRouter()
 	const { showToast } = useToast()
 	// rename the mutation function by the use of ":" (colon) to signup.
 	//* try giving ","(comma) after isPending and pressing ctrl+space to see what the createNewUser returns (or provides).
-	const { mutateAsync: signup, isPending } = createNewUser()
+	const { mutateAsync: signup, isPending } = useSignup()
 
 	const handleSignup = async () => {
 		// temp data, should get from form (FORMIK)

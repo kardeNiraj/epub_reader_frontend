@@ -15,7 +15,7 @@ export const useLogin = () => {
 
 // signup hook made by @tanstack react-query.
 // handles errors and provides response object if success
-export const createNewUser = () => {
+export const useSignup = () => {
 	// expected data --
 	// 	{
 	// 		"name": "niraj karde",
