@@ -3,44 +3,68 @@
 import apiClient from "@/Services/apiClient"
 import localStore from "@/utils/cookie"
 import useToast from "@/utils/toaster/useToast"
+import { Spinner } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
+import UserNav from "../components/UserNav"
 
 export default function AuthLayout({ children }) {
 	const router = useRouter()
-
-	// check if a user is present in the localStorage of browser... i.e if a user is loggedIn
-	const token = localStore.getItem("userToken")
 	const { showToast } = useToast()
+	const [isLoading, setIsLoading] = useState(true)
 
-	if (token) {
-		try {
-			// made a status call to backend for checking if the user has a live session based on the token
-			const response = apiClient.get("/api/user/status", {
-				headers: {
-					Authorization: token,
-				},
-			})
+	// used useEffect because want to check on page load
+	useEffect(() => {
+		const handleAuthCheck = async () => {
+			try {
+				const token = localStore.getItem("userToken")
 
-			// if session is not active then redirect to login page.
-			if (!response?.data?.data?.isSessionActive) {
-				showToast(
-					"error",
-					"Error",
+				if (token) {
+					// checking if the user token has active session
+					const response = await apiClient.get("/api/user/status", {
+						headers: {
+							Authorization: token,
+						},
+					})
+
+					if (!response.data.data.isSessionActive) {
+						showToast(
+							"error",
+							"Error",
+							"Login Session ended. Please login again"
+						)
+						// Redirect to login if session has expired
+						router.push("/login")
+						return
+					}
+				}
+			} catch (error) {
+				console.log("Error in UserAuth: ", error)
+				const message =
 					error?.message ||
-						error?.response?.data?.message ||
-						"Please login to continue!"
-				)
-				router.push("/login")
-			}
-		} catch (error) {
-			showToast(
-				"error",
-				"Error",
-				error?.message ||
 					error?.response?.data?.message ||
-					"Error while checking session!"
-			)
+					"Error checking session"
+				showToast("error", "Error", message)
+			} finally {
+				setIsLoading(false)
+			}
 		}
-	}
-	return <div>{children}</div>
+
+		handleAuthCheck()
+	}, [router, useToast])
+
+	return (
+		<Suspense fallback={<Spinner />}>
+			{isLoading ? (
+				<div className='h-screen w-screen flex justify-center items-center'>
+					<Spinner size='md' color='default' />
+				</div>
+			) : (
+				<>
+					<UserNav />
+					{children}
+				</>
+			)}
+		</Suspense>
+	)
 }
