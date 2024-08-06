@@ -1,8 +1,13 @@
-import localStore from "@/utils/cookie"
+import store from "@/utils/cookie"
 import { default as axios } from "axios"
+
+const token = store.get("ebookUserToken")
 
 const apiClient = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
+	headers: {
+		Authorization: token,
+	},
 })
 
 apiClient.interceptors.request.use(
@@ -29,7 +34,7 @@ apiClient.interceptors.response.use(
 				error?.response?.data?.message || error?.response?.data?.status_message
 			)?.includes("Please provide a valid token.")
 		) {
-			localStore.removeItem("userToken")
+			store.remove("ebookUserToken")
 		}
 		return Promise.reject(error)
 	}

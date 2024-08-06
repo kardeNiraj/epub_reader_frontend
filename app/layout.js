@@ -1,9 +1,9 @@
-import { Inter } from "next/font/google"
+import { Goudy_Bookletter_1911 } from "next/font/google"
 import Head from "next/head"
 import Providers from "./Providers"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Goudy_Bookletter_1911({ subsets: ["latin"], weight: "400" })
 
 export const metadata = {
 	title: "Pocket Book",

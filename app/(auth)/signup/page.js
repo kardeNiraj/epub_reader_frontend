@@ -16,9 +16,9 @@ const SignupPage = () => {
 	const handleSignup = async () => {
 		// temp data, should get from form (FORMIK)
 		const data = {
-			name: "niraj karde",
-			email: "niraj.private01@gmail.com",
-			phone: "832947670",
+			name: "Neeraj Karde",
+			email: "neeraj.karde01@gmail.com",
+			phone: "8329476476",
 			password: "123123",
 		}
 
@@ -49,7 +49,12 @@ const SignupPage = () => {
 		// suspense is used in case of any delay in the loading of the page.
 		// if delay occurs then Spinner component from nextUI will be shown.
 		// Spinner is nothing but a loader, that indicates page loading.
-		<Suspense fallback={<Spinner />}>
+		<Suspense
+			fallback={
+				<div className='h-screen w-screen flex justify-center items-center'>
+					<Spinner size='md' color='default' />
+				</div>
+			}>
 			<div className='w-screen h-screen flex flex-col gap-4 justify-center items-center'>
 				SignupPage reached
 				<Button onClick={handleSignup} isLoading={isPending}>

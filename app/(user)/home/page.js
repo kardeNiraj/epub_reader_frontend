@@ -1,8 +1,10 @@
+"use client"
+
+import BrowserHomePage from "@/app/components/home/BrowserHomePage"
+import MobileHomePage from "@/app/components/home/MobileHomePage"
+import { isMobile } from "react-device-detect"
+
 const HomePage = () => {
-	return (
-		<div className='w-screen h-screen flex justify-center items-center'>
-			HomePage reached
-		</div>
-	)
+	return isMobile ? <MobileHomePage /> : <BrowserHomePage />
 }
 export default HomePage
